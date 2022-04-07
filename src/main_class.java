@@ -73,91 +73,105 @@ public class main_class {
         // main loop
         while (true) {
 
+            try {
 
-            System.out.print("?say > ");
-            String cmd = scObj.nextLine().trim().toLowerCase();
+                System.out.print("?say > ");
+                String cmd = scObj.nextLine().trim().toLowerCase();
 
-            switch (cmd) {
+                switch (cmd) {
 
-                case "start" ->{
+                    case "start" ->{
 
-                    // getting the file and its name
-                    try {
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        // getting the file and its name
+                        try {
+                            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-                        JFileChooser chooser = new JFileChooser();
-                        chooser.setVisible(true);
-                        chooser.setDialogTitle("FASTA ONLY");
+                            JFileChooser chooser = new JFileChooser();
+                            chooser.setVisible(true);
+                            chooser.setDialogTitle("FASTA ONLY");
 
-                        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 
-                            m.setMyFile(chooser.getSelectedFile());
+                                m.setMyFile(chooser.getSelectedFile());
 
-                            if (!formatCheck(m.getMyFile()))
-                                throw new Exception("only FASTA files are allowed.");
-                        }else
+                                if (!formatCheck(m.getMyFile()))
+                                    throw new Exception("only FASTA files are allowed.");
+                            }else
+                                continue;
+
+                        } catch (Exception e) {
+                            System.out.println("Something went wrong: " + e.getMessage() + '\n' +
+                                    "Try again\n\n");
                             continue;
-
-                    } catch (Exception e) {
-                        System.out.println("Something went wrong: " + e.getMessage() + '\n' +
-                                "Try again\n\n");
-                        continue;
-                    }
-
-                    StringBuilder text = new StringBuilder();
-
-                    // storing header and raw sequence
-                    try {
-                        scObjF = new Scanner(m.getMyFile());
-                        for (int i = 0; scObjF.hasNext();) {
-
-                            if (i == 0) {
-                                m.setHeaderLine(scObjF.nextLine());
-                                i++;
-                            } else
-                                text.append(scObjF.nextLine());
                         }
 
-                        m.setRawSeq(text.toString());
+                        StringBuilder text = new StringBuilder();
 
-                    } catch (Exception ne) {
-                        System.out.println("something went wrong" + ne.getMessage());
+                        // storing header and raw sequence
+                        try {
+                            scObjF = new Scanner(m.getMyFile());
+                            for (int i = 0; scObjF.hasNext();) {
+
+                                if (i == 0) {
+                                    m.setHeaderLine(scObjF.nextLine());
+                                    i++;
+                                } else
+                                    text.append(scObjF.nextLine());
+                            }
+
+                            m.setRawSeq(text.toString());
+
+                        } catch (Exception ne) {
+                            System.out.println("something went wrong" + ne.getMessage());
+                        }
+
+                        m.setLength(m.getRawSeq().length());
+
+                        System.out.println(m.getMyFile().getName() + " loaded successfully!\n");
+                        System.out.println("The codons are as follows: \n\n");
+
+                        printCodons(m);
+
+                        System.out.println("\n\n");
+                        // *** case end
+
+
                     }
 
-                    m.setLength(m.getRawSeq().length());
+                    case "get" -> {
 
-                    System.out.println(m.getMyFile().getName() + " loaded successfully!\n");
-                    System.out.println("The codons are as follows: \n\n");
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
 
-                    printCodons(m);
+                        try {
+                            System.out.print("?residue number: ");
+                            int res = scObjG.nextInt();
 
-                    System.out.println("\n\n");
-                    // *** case end
+                            if (res < 0 || res > m.getLength()) {
+                                System.out.println("residue number invalid.\nsay get again\n");
+                            } else
+                                System.out.println(res + " -> " + m.getRawSeq().charAt(res+1));
 
-
-                }
-
-                case "get" -> {
-
-                    if (m.getMyFile() == null) {
-                        System.out.println("File not loaded yet...\n");
-                        continue;
+                        } catch (NullPointerException e) {
+                            System.out.println("something went wrong: " + e.getMessage());
+                        }
                     }
 
-                    System.out.print("?residue number: ");
-                    int res = scObjG.nextInt();
+                    case "end" -> {
+                        System.out.println("\nExiting...\n");
+                        System.exit(0);
+                    }
 
-                    System.out.println(res + " -> " + m.getRawSeq().charAt(res));
-                }
+                    default -> System.out.println("Invalid input!\nEnter 'start' to continue or 'end' to exit.\n");
 
-                case "end" -> {
-                    System.out.println("\nExiting...\n");
-                    System.exit(0);
-                }
+                } // end of switch
 
-                default -> System.out.println("Invalid input!\nEnter 'start' to continue or 'end' to exit.\n");
+            } catch (Exception e) {
+                System.out.println("something went wrong: " + e.getMessage());
+            }
 
-            } // end of switch
         } // end of while loop
     } // end of main method
 
