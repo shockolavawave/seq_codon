@@ -25,6 +25,7 @@ class oneFile {
 public class main_class {
 
     static Scanner scObj = new Scanner(System.in);
+    static Scanner scObjG = new Scanner(System.in);
     static Scanner scObjF = new Scanner(System.in);
 
     // for checking of file format
@@ -134,6 +135,19 @@ public class main_class {
                     // *** case end
 
 
+                }
+
+                case "get" -> {
+
+                    if (m.getMyFile() == null) {
+                        System.out.println("File not loaded yet...\n");
+                        continue;
+                    }
+
+                    System.out.print("?residue number: ");
+                    int res = scObjG.nextInt();
+
+                    System.out.println(res + " -> " + m.getRawSeq().charAt(res));
                 }
 
                 case "end" -> {
