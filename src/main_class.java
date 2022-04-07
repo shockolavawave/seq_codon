@@ -119,7 +119,7 @@ public class main_class {
                                     text.append(scObjF.nextLine());
                             }
 
-                            m.setRawSeq(text.toString());
+                            m.setRawSeq(text.toString().toUpperCase());
 
                         } catch (Exception ne) {
                             System.out.println("something went wrong" + ne.getMessage());
@@ -152,7 +152,7 @@ public class main_class {
                             if (res < 0 || res > m.getLength()) {
                                 System.out.println("residue number invalid.\nsay get again\n");
                             } else
-                                System.out.println(res + " -> " + m.getRawSeq().charAt(res+1));
+                                System.out.println(res + " -> " + m.getRawSeq().charAt(res-1));
 
                         } catch (NullPointerException e) {
                             System.out.println("something went wrong: " + e.getMessage());
@@ -174,6 +174,4 @@ public class main_class {
 
         } // end of while loop
     } // end of main method
-
-
 }// end of main class
