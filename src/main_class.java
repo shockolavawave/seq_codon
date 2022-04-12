@@ -159,7 +159,7 @@ public class main_class {
             case "protein" -> {
                 for (int i = 0; i < m.getLength(); i++){
 
-                    if(i%60 == 0 && i != 0)
+                    if(i%70 == 0 && i != 0)
                         fin.append('\n');
 
                     fin.append(m.getRawSeq().charAt(i));
