@@ -1,0 +1,4 @@
+todo:
+
+- create a switch in "get" case points the nth codon /
+  add features to get-residue which describes its position in codon and its corresponding amino acid
