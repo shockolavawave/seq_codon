@@ -17,6 +17,10 @@ class oneFile {
     public String getRawSeq() {     return rawSeq;    }
     public void setRawSeq(String rawSeq) {    this.rawSeq = rawSeq;    }
 
+    private String seq_type;
+    public String getSeq_type() {        return seq_type;    }
+    public void setSeq_type(String seq_type) {        this.seq_type = seq_type;    }
+
     private int length;
     public int getLength() {   return length;    }
     public void setLength(int length) {    this.length = length;    }
@@ -47,23 +51,127 @@ public class main_class {
         return (format.equals("fasta") || format.equals("FASTA"));
     }
 
-    // printing codons
-    public static void printCodons(oneFile m) {
-        StringBuilder fin = new StringBuilder();
+    // tells the sequence type
+    public static String getSequenceType(String sequence) {
 
-        for (int i = 0; i < m.getLength(); i++){
+        if (isDNA(sequence))
+            return "DNA";
+        else if (isRNA(sequence))
+            return "RNA";
+        else if (isProtein(sequence))
+            return "protein";
+        else
+            return "none";
+    }
 
-            if(i%3 == 0 && i != 0)
-                fin.append(' ');
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static boolean isDNA(String sequence) {
 
-            if(i%60 == 0 && i != 0)
-                fin.append('\n');
-
-            fin.append(m.getRawSeq().charAt(i));
+        for (int i = 0; i < sequence.length(); i++) {
+            if (sequence.charAt(i) == 'A' || sequence.charAt(i) == 'G' || sequence.charAt(i) == 'T' || sequence.charAt(i) == 'C'){
+                // null block
+            }
+            else
+                return false;
         }
 
-        System.out.println(m.getHeaderLine() + "\n\n" + fin +
-                            "\n\n" + "length: " + m.getLength());
+        return true;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static boolean isRNA(String sequence) {
+
+        for (int i = 0; i < sequence.length(); i++) {
+            if (sequence.charAt(i) == 'A' || sequence.charAt(i) == 'G' || sequence.charAt(i) == 'U' || sequence.charAt(i) == 'C'){
+                // null block
+            }
+            else
+                return false;
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static boolean isProtein(String sequence) {
+
+        for (int i = 0; i < sequence.length(); i++) {
+            if (
+                    sequence.charAt(i) == 'A' || sequence.charAt(i) == 'C' || sequence.charAt(i) == 'D' || sequence.charAt(i) == 'E' ||
+                            sequence.charAt(i) == 'F' || sequence.charAt(i) == 'G' || sequence.charAt(i) == 'H' || sequence.charAt(i) == 'I' ||
+                            sequence.charAt(i) == 'K' || sequence.charAt(i) == 'L' || sequence.charAt(i) == 'M' || sequence.charAt(i) == 'N' ||
+                            sequence.charAt(i) == 'O' || sequence.charAt(i) == 'P' || sequence.charAt(i) == 'Q' || sequence.charAt(i) == 'R' ||
+                            sequence.charAt(i) == 'S' || sequence.charAt(i) == 'T' || sequence.charAt(i) == 'U' || sequence.charAt(i) == 'V' ||
+                            sequence.charAt(i) == 'W' || sequence.charAt(i) == 'Y'
+            ){
+                // null block
+            }
+            else
+                return false;
+        }
+
+        return true;
+    }
+
+    // printing codons
+    public static void printSeq(oneFile m) {
+
+        StringBuilder fin = new StringBuilder();
+
+        m.setSeq_type(getSequenceType(m.getRawSeq()));
+
+        switch (m.getSeq_type()) {
+
+            case "DNA" -> {
+                for (int i = 0; i < m.getLength(); i++){
+
+                    if(i%3 == 0 && i != 0)
+                        fin.append(' ');
+
+                    if(i%60 == 0 && i != 0)
+                        fin.append('\n');
+
+                    fin.append(m.getRawSeq().charAt(i));
+                }
+
+                System.out.println("The sequence type is DNA. Printing in codon fashion.\n");
+                System.out.println(m.getHeaderLine() + "\n\n" + fin +
+                        "\n\n" + "length: " + m.getLength());
+            }
+
+            case "RNA" -> {
+                for (int i = 0; i < m.getLength(); i++){
+
+                    if(i%3 == 0 && i != 0)
+                        fin.append(' ');
+
+                    if(i%60 == 0 && i != 0)
+                        fin.append('\n');
+
+                    fin.append(m.getRawSeq().charAt(i));
+                }
+
+                System.out.println("The sequence type is RNA. Printing in codon fashion.\n");
+                System.out.println(m.getHeaderLine() + "\n\n" + fin +
+                        "\n\n" + "length: " + m.getLength());
+            }
+
+            case "protein" -> {
+                for (int i = 0; i < m.getLength(); i++){
+
+                    if(i%60 == 0 && i != 0)
+                        fin.append('\n');
+
+                    fin.append(m.getRawSeq().charAt(i));
+                }
+
+                System.out.println("The sequence type is protein.\n");
+                System.out.println(m.getHeaderLine() + "\n\n" + fin +
+                        "\n\n" + "length: " + m.getLength());
+            }
+            case "none" -> System.out.println("There something wrong with the provided sequence;\n" +
+                                              "it doesn't fall under any category (DNA/RNA/protein).");
+        } // end of switch statement
     }
 
     public static void main(String[] args) {
@@ -128,14 +236,11 @@ public class main_class {
                         m.setLength(m.getRawSeq().length());
 
                         System.out.println(m.getMyFile().getName() + " loaded successfully!\n");
-                        System.out.println("The codons are as follows: \n\n");
 
-                        printCodons(m);
+                        printSeq(m);
 
                         System.out.println("\n\n");
                         // *** case end
-
-
                     }
 
                     case "get" -> {
@@ -159,7 +264,7 @@ public class main_class {
                         }
                     }
 
-                    case "end" -> {
+                    case "end", "exit", "bye" -> {
                         System.out.println("\nExiting...\n");
                         System.exit(0);
                     }
