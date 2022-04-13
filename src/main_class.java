@@ -169,10 +169,68 @@ public class main_class {
                 System.out.println(m.getHeaderLine() + "\n\n" + fin +
                         "\n\n" + "length: " + m.getLength());
             }
+
             case "none" -> System.out.println("There something wrong with the provided sequence;\n" +
                                               "it doesn't fall under any category (DNA/RNA/protein).");
         } // end of switch statement
-    }
+    } // end of printSeq
+
+    public static String translate(String sequence) {
+
+        //
+        int words;
+        if ((sequence.length()%3) == 0)
+            words = sequence.length()/3;
+        else
+            words = sequence.length()/3 + 1;
+
+        String[] codons = new String[words];
+        for (int i = 0; i < words; i++)
+            codons[i] = "";
+
+        for (int i = 0, j = 0; i < sequence.length(); i++) {
+
+            if (i%3 == 0 && i != 0)
+                j++;
+
+            codons[j] += sequence.charAt(i);
+        }
+
+        StringBuilder fin = new StringBuilder();
+
+        for (String codon : codons) {
+            switch (codon) {
+
+                case "AUU", "AUC", "AUA" ->                      fin.append("I");
+                case "CUU", "CUC", "CUA", "CUG", "UUA", "UUG" -> fin.append("L");
+                case "GUU", "GUC", "GUA", "GUG" ->               fin.append("V");
+                case "UUU", "UUC" ->                             fin.append("F");
+                case "AUG" ->                                    fin.append("M");
+                case "UGU", "UGC" ->                             fin.append("C");
+                case "GCU", "GCC", "GCA", "GCG" ->               fin.append("A");
+                case "GGU", "GGC", "GGA", "GGG" ->               fin.append("G");
+                case "CCU", "CCC", "CCA", "CCG" ->               fin.append("P");
+                case "ACU", "ACC", "ACA", "ACG" ->               fin.append("T");
+                case "UCU", "UCC", "UCA", "UCG", "AGU", "AGC" -> fin.append("S");
+                case "UAU", "UAC" ->                             fin.append("Y");
+                case "UGG" ->                                    fin.append("W");
+                case "CAA", "CAG" ->                             fin.append("Q");
+                case "AAU", "AAC" ->                             fin.append("N");
+                case "CAU", "CAC" ->                             fin.append("H");
+                case "GAA", "GAG" ->                             fin.append("E");
+                case "GAU", "GAC" ->                             fin.append("D");
+                case "AAA", "AAG" ->                             fin.append("K");
+                case "CGU", "CGC", "CGA", "CGG", "AGA", "AGG" -> fin.append("R");
+                case "UAA", "UAG", "UGA" ->                      fin.append("-");
+
+                default -> {
+                    return "faulty translation; sequence length not divisible by 3";
+                }
+            }
+        }
+
+        return fin.toString();
+    }// end of translate
 
     public static void main(String[] args) {
 
@@ -186,6 +244,7 @@ public class main_class {
                 System.out.print("?say > ");
                 String cmd = scObj.nextLine().trim().toLowerCase();
 
+                System.out.println();
                 switch (cmd) {
 
                     case "start" ->{
@@ -261,6 +320,126 @@ public class main_class {
 
                         } catch (NullPointerException e) {
                             System.out.println("something went wrong: " + e.getMessage());
+                        }
+                    }
+
+                    case "tr1" -> { // transcription
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        switch (m.getSeq_type()) {
+
+                            case "none" -> System.out.println("Faulty Sequence. Load a different file.\n");
+
+                            case "RNA" -> System.out.println("Sequence already in RNA form.\n");
+
+                            case "protein" -> System.out.println("Invalid command. Protein sequences cannot be transcribed.\n");
+
+                            default -> {
+
+                                // *** sequence changed ***
+                                m.setRawSeq(m.getRawSeq().replaceAll("T", "U"));
+                                m.setSeq_type("RNA");
+                                StringBuilder fin = new StringBuilder();
+
+                                for (int i = 0; i < m.getLength(); i++){
+
+                                    if(i%3 == 0 && i != 0)
+                                        fin.append(' ');
+
+                                    if(i%60 == 0 && i != 0)
+                                        fin.append('\n');
+
+                                    fin.append(m.getRawSeq().charAt(i));
+                                }
+
+                                System.out.println("The transcribed sequence is:\n\n" + fin + "\n");
+                            }
+                        }
+                    }
+
+                    case "re-tr1" -> { // reverse-transcription
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        switch (m.getSeq_type()) {
+
+                            case "none" -> System.out.println("Faulty Sequence. Load a different file.\n");
+
+                            case "DNA" -> System.out.println("Sequence already in DNA form.\n");
+
+                            case "protein" -> System.out.println("Invalid command. Protein sequences cannot be reverse-transcribed.\n");
+
+                            default -> {
+
+                                // *** sequence changed ***
+                                m.setRawSeq(m.getRawSeq().replaceAll("U", "T"));
+                                m.setSeq_type("DNA");
+                                StringBuilder fin = new StringBuilder();
+
+                                for (int i = 0; i < m.getLength(); i++){
+
+                                    if(i%3 == 0 && i != 0)
+                                        fin.append(' ');
+
+                                    if(i%60 == 0 && i != 0)
+                                        fin.append('\n');
+
+                                    fin.append(m.getRawSeq().charAt(i));
+                                }
+
+                                System.out.println("The reverse-transcribed sequence is:\n\n" + fin + "\n");
+                            }
+                        }
+                    }
+
+                    case "tr2" -> { // translation
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        switch (m.getSeq_type()) {
+
+                            case "none" -> System.out.println("Faulty Sequence. Load a different file.\n");
+
+
+                            case "protein" -> System.out.println("Invalid command. Protein sequences cannot be translated.\n");
+
+                            case "RNA", "DNA" -> {
+
+                                if (m.getLength() % 3 != 0) {
+                                    System.out.println("Sequence length not divisible by 3; cannot translate.\n");
+                                    continue;
+                                }
+
+                                StringBuilder fin = new StringBuilder();
+                                String buff;
+
+                                if (m.getSeq_type().equals("DNA"))
+                                    buff = m.getRawSeq().replaceAll("T", "U");
+                                else
+                                    buff = m.getRawSeq();
+
+                                buff = translate(buff);
+
+                                for (int i = 0; i < buff.length(); i++){
+
+                                    if(i%70 == 0 && i != 0)
+                                        fin.append('\n');
+
+                                    fin.append(buff.charAt(i));
+                                }
+
+                                System.out.println("The translated sequence is: \n\n" + fin + '\n');
+                            }
                         }
                     }
 
