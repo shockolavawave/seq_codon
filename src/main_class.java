@@ -418,6 +418,8 @@ public class main_class {
                             continue;
                         }
 
+                        System.out.println("*** The original nucleotide sequence is retained. ***\n");
+
                         switch (m.getSeq_type()) {
 
                             case "none" -> System.out.println("Faulty Sequence. Load a different file.\n");
@@ -461,6 +463,8 @@ public class main_class {
                             System.out.println("File not loaded yet...\n");
                             continue;
                         }
+
+                        System.out.println("*** The original nucleotide sequence is replaced by the translated sequence. ***\n");
 
                         switch (m.getSeq_type()) {
 
