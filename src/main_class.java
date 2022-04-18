@@ -303,6 +303,17 @@ public class main_class {
                         // *** case end
                     }
 
+                    case "echo" -> {
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        printSeq(m);
+
+                    }
+
                     case "get" -> {
 
                         if (m.getMyFile() == null) {
@@ -437,6 +448,50 @@ public class main_class {
                                         fin.append('\n');
 
                                     fin.append(buff.charAt(i));
+                                }
+
+                                System.out.println("The translated sequence is: \n\n" + fin + '\n');
+                            }
+                        }
+                    }
+
+                    case "tr2/s" -> { // translation
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        switch (m.getSeq_type()) {
+
+                            case "none" -> System.out.println("Faulty Sequence. Load a different file.\n");
+
+
+                            case "protein" -> System.out.println("Invalid command. Protein sequences cannot be translated.\n");
+
+                            case "RNA", "DNA" -> {
+
+                                if (m.getLength() % 3 != 0) {
+                                    System.out.println("Sequence length not divisible by 3; cannot translate.\n");
+                                    continue;
+                                }
+
+                                StringBuilder fin = new StringBuilder();
+                                String buff;
+
+                                if (m.getSeq_type().equals("DNA"))
+                                    buff = m.getRawSeq().replaceAll("T", "U");
+                                else
+                                    buff = m.getRawSeq();
+
+                                m.setRawSeq(translate(buff));
+
+                                for (int i = 0; i < m.getLength(); i++){
+
+                                    if(i%70 == 0 && i != 0)
+                                        fin.append('\n');
+
+                                    fin.append(m.getRawSeq().charAt(i));
                                 }
 
                                 System.out.println("The translated sequence is: \n\n" + fin + '\n');
