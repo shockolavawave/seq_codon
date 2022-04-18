@@ -269,6 +269,7 @@ public class main_class {
                         } catch (Exception e) {
                             System.out.println("Something went wrong: " + e.getMessage() + '\n' +
                                     "Try again\n\n");
+                            m.setMyFile(null);
                             continue;
                         }
 
