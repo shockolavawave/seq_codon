@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 class oneFile {
@@ -102,7 +104,7 @@ public class main_class {
                             sequence.charAt(i) == 'K' || sequence.charAt(i) == 'L' || sequence.charAt(i) == 'M' || sequence.charAt(i) == 'N' ||
                             sequence.charAt(i) == 'O' || sequence.charAt(i) == 'P' || sequence.charAt(i) == 'Q' || sequence.charAt(i) == 'R' ||
                             sequence.charAt(i) == 'S' || sequence.charAt(i) == 'T' || sequence.charAt(i) == 'U' || sequence.charAt(i) == 'V' ||
-                            sequence.charAt(i) == 'W' || sequence.charAt(i) == 'Y'
+                            sequence.charAt(i) == 'W' || sequence.charAt(i) == 'Y' || sequence.charAt(i) == '-'
             ){
                 // null block
             }
@@ -174,6 +176,22 @@ public class main_class {
                                               "it doesn't fall under any category (DNA/RNA/protein).");
         } // end of switch statement
     } // end of printSeq
+
+    // for printing the sequence into the file
+    private static String formattedSeq(oneFile m) {
+
+        StringBuilder fin = new StringBuilder();
+
+        for (int i = 0; i < m.getLength(); i++) {
+
+            if (i % 70 == 0 && i != 0)
+                fin.append('\n');
+
+            fin.append(m.getRawSeq().charAt(i));
+        }
+
+        return fin.toString();
+    }
 
     public static String translate(String sequence) {
 
@@ -312,6 +330,37 @@ public class main_class {
 
                         printSeq(m);
 
+                        System.out.println("\n\n");
+
+                    }
+
+                    case "w" -> {
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        System.out.print("Enter file name (along with extension): ");
+                        String f_name = scObjG.nextLine();
+
+                        System.out.print("Enter header line: ");
+                        String h_line = scObjG.nextLine();
+
+                        h_line = ">".concat(h_line);
+
+                        try {
+
+                            Path fileName = Path.of("./" + f_name);
+
+                            Files.writeString(fileName, h_line + '\n' + formattedSeq(m));
+
+                        } catch (Exception e) {
+                            System.out.println("something went wrong in function: " + e.getMessage());
+                            continue;
+                        }
+
+                        System.out.println("File \"" + m.getMyFile().getName() + "\" written successfully.\n");
                     }
 
                     case "get" -> {
@@ -489,6 +538,8 @@ public class main_class {
                                     buff = m.getRawSeq();
 
                                 m.setRawSeq(translate(buff));
+                                m.setLength(m.getLength()/3);
+                                m.setSeq_type("protein");
 
                                 for (int i = 0; i < m.getLength(); i++){
 
