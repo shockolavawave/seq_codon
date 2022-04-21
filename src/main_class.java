@@ -32,6 +32,7 @@ public class main_class {
 
     static Scanner scObj = new Scanner(System.in);
     static Scanner scObjG = new Scanner(System.in);
+    static Scanner scObjM = new Scanner(System.in);
     static Scanner scObjF = new Scanner(System.in);
 
     // for checking of file format
@@ -374,7 +375,7 @@ public class main_class {
                             System.out.print("?residue number: ");
                             int res = scObjG.nextInt();
 
-                            if (res < 0 || res > m.getLength()) {
+                            if (res < 1 || m.getLength() < res) {
                                 System.out.println("residue number invalid.\nsay get again\n");
                             } else
                                 System.out.println(res + " -> " + m.getRawSeq().charAt(res-1));
@@ -382,6 +383,51 @@ public class main_class {
                         } catch (NullPointerException e) {
                             System.out.println("something went wrong: " + e.getMessage());
                         }
+                    }
+
+                    // manipulative functions
+                    case "mut" -> {
+
+                        if (m.getMyFile() == null) {
+                            System.out.println("File not loaded yet...\n");
+                            continue;
+                        }
+
+                        try {
+                            System.out.print("?residue number: ");
+                            int res = scObjG.nextInt();
+
+                            if (res < 1 || m.getLength() < res) {
+                                System.out.println("residue number invalid.\nsay get again\n");
+                            } else {
+                                System.out.println(res + " -> " + m.getRawSeq().charAt(res - 1));
+                                System.out.print("Enter residue to be replaced: ");
+                                String mut = scObjM.nextLine();
+
+                                if (mut.length() > 1) {
+                                    System.out.println("only one character accepted.\n");
+                                    continue;
+                                }
+
+                                String ty = getSequenceType(mut);
+
+                                if (!ty.equals(m.getSeq_type())) {
+                                    System.out.println("Entered residue is not of type " + m.getSeq_type() + '\n');
+                                    continue;
+                                }
+
+                                StringBuilder buff = new StringBuilder(m.getRawSeq());
+                                buff.setCharAt(res - 1, mut.charAt(0));
+
+                                m.setRawSeq(buff.toString());
+
+                                System.out.println("Residue mutated successfully.\n");
+                            }
+
+                        } catch (NullPointerException e) {
+                            System.out.println("something went wrong: " + e.getMessage());
+                        }
+
                     }
 
                     case "tr1" -> { // transcription
