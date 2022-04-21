@@ -260,6 +260,7 @@ public class main_class {
 
             try {
 
+                System.out.println("enter 'help' for viewing commands.");
                 System.out.print("?say > ");
                 String cmd = scObj.nextLine().trim().toLowerCase();
 
@@ -321,6 +322,19 @@ public class main_class {
                         System.out.println("\n\n");
                         // *** case end
                     }
+
+                    case "help" -> System.out.println("""
+                            start        : opens file loading window.
+                            echo         : reprints the sequence from the file loaded.
+                            w            : writes the file.
+                            get          : prints the residue at desired position.
+                            mut          : manual point mutation.
+                            tr1          : transcribes the DNA sequence.
+                            re-tr1       : reverse-transcribes the RNA sequence.
+                            tr2          : prints the translated sequence (original nucleotide sequence remains intact).
+                            tr2/s        : translates the original nucleotide sequence
+                            end/exit/bye : exiting the program safely.
+                            """);
 
                     case "echo" -> {
 
