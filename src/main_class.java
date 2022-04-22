@@ -416,7 +416,7 @@ public class main_class {
                             } else {
                                 System.out.println(res + " -> " + m.getRawSeq().charAt(res - 1));
                                 System.out.print("Enter residue to be replaced: ");
-                                String mut = scObjM.nextLine();
+                                String mut = scObjM.nextLine().toUpperCase();
 
                                 if (mut.length() > 1) {
                                     System.out.println("only one character accepted.\n");
