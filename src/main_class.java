@@ -32,8 +32,11 @@ public class main_class {
 
     static Scanner scObj = new Scanner(System.in);
     static Scanner scObjG = new Scanner(System.in);
-    static Scanner scObjM = new Scanner(System.in);
+    static Scanner scObjM1 = new Scanner(System.in);
+    static Scanner scObjM2 = new Scanner(System.in);
     static Scanner scObjF = new Scanner(System.in);
+    static Scanner scObjW1 = new Scanner(System.in);
+    static Scanner scObjW2 = new Scanner(System.in);
 
     // for checking of file format
     public static boolean formatCheck (File fl){
@@ -357,10 +360,10 @@ public class main_class {
                         }
 
                         System.out.print("Enter file name (along with extension): ");
-                        String f_name = scObjG.nextLine();
+                        String f_name = scObjW1.nextLine();
 
                         System.out.print("Enter header line: ");
-                        String h_line = scObjG.nextLine();
+                        String h_line = scObjW2.nextLine();
 
                         h_line = ">".concat(h_line);
 
@@ -409,14 +412,14 @@ public class main_class {
 
                         try {
                             System.out.print("?residue number: ");
-                            int res = scObjG.nextInt();
+                            int res = scObjM1.nextInt();
 
                             if (res < 1 || m.getLength() < res) {
                                 System.out.println("residue number invalid.\nsay get again\n");
                             } else {
                                 System.out.println(res + " -> " + m.getRawSeq().charAt(res - 1));
                                 System.out.print("Enter residue to be replaced: ");
-                                String mut = scObjM.nextLine().toUpperCase();
+                                String mut = scObjM2.nextLine().toUpperCase();
 
                                 if (mut.length() > 1) {
                                     System.out.println("only one character accepted.\n");
